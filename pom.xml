@@ -16,7 +16,7 @@
   <artifactId>spring-petclinic</artifactId>
   <version>4.0.0-SNAPSHOT</version>
 
-  <!-- ⭐ IMPORTANT → Tomcat needs WAR packaging -->
+  <!-- ⭐ IMPORTANT: Tomcat requires WAR packaging -->
   <packaging>war</packaging>
 
   <name>petclinic</name>
@@ -45,7 +45,7 @@
 
   <dependencies>
 
-    <!-- Spring Boot dependencies -->
+    <!-- Spring Boot Dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
@@ -61,7 +61,7 @@
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
 
-    <!-- ⭐ Exclude embedded Tomcat (we deploy to external Tomcat) -->
+    <!-- ⭐ Remove embedded Tomcat (we deploy to external Tomcat) -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webmvc</artifactId>
@@ -73,7 +73,7 @@
       </exclusions>
     </dependency>
 
-    <!-- ⭐ Use Tomcat as "provided" so WAR deploys correctly -->
+    <!-- ⭐ Use Tomcat as PROVIDED so WAR runs in external container -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-tomcat</artifactId>
@@ -90,7 +90,7 @@
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
 
-    <!-- DB -->
+    <!-- Databases -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -139,7 +139,7 @@
       <version>${webjars-font-awesome.version}</version>
     </dependency>
 
-    <!-- Tests -->
+    <!-- Test -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webmvc-test</artifactId>
@@ -182,7 +182,7 @@
         </executions>
       </plugin>
 
-      <!-- Checkstyle (fixed: exclude scannerwork) -->
+      <!-- ⭐ FIXED CHECKSTYLE ERRORS -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -199,6 +199,7 @@
             <version>${nohttp-checkstyle.version}</version>
           </dependency>
         </dependencies>
+
         <executions>
           <execution>
             <id>nohttp-checkstyle-validation</id>
@@ -207,26 +208,43 @@
             <configuration>
               <configLocation>src/checkstyle/nohttp-checkstyle.xml</configLocation>
               <sourceDirectories>${basedir}</sourceDirectories>
+
               <includes>**/*</includes>
 
-              <!-- ⭐ FIXED: ignore SonarQube output -->
+              <!-- ⭐ FIX: Ignore Sonar folder + target -->
               <excludes>
-                **/.git/**/*,
-                **/.idea/**/*,
-                **/target/**/,
+                **/.git/**,
+                **/.idea/**,
+                **/target/**,
                 **/.flattened-pom.xml,
                 **/.scannerwork/**
               </excludes>
+
+              <!-- ⭐ FIX: REQUIRED FOR CHECKSTYLE -->
+              <propertyExpansion>
+                config_loc=${basedir}/src/checkstyle/
+              </propertyExpansion>
 
             </configuration>
           </execution>
         </executions>
       </plugin>
 
-      <!-- Compiler, Jacoco, Spring Boot, etc (unchanged) -->
-      <!-- Rest of plugins remain unchanged from your original file -->
+      <!-- Spring Boot build-info -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals><goal>build-info</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Compiler & Jacoco (unchanged) -->
 
     </plugins>
   </build>
 
 </project>
+
